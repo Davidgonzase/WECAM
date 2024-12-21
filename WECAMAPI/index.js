@@ -1,0 +1,68 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+const app = express()
+app.use(express.json())
+const port = 8000
+
+import login from './resolver/get/login.js';
+import verify from './resolver/get/verify.js';
+import deleteuser from './resolver/delete/deleteuser.js'
+import newuser from './resolver/post/newuser.js'
+import newcam from './resolver/post/newcam.js'
+
+await dotenv.config();
+const MDKEY = process.env.mongodb_key;
+export const JWTSECRET = process.env.jwt_secret;
+
+await mongoose.connect(MDKEY, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Database connected'))
+  .catch(err => console.error('Database connection error:', err));
+
+app.get('/', (req, res) => {
+  let response = {
+    status:"400",
+    endpoints:[
+    ]
+  } 
+  res.send(response);
+})
+
+app.get('/login', async (req, res) => {
+  await login(req,res);
+})
+
+app.get('/verify', async (req, res) => {
+  await verify(req,res);
+})
+
+app.get('/pcstatus',(req,res)=>{
+  pcstatus(req,res);
+})
+
+app.put('/answercam',(req,res)=>{
+  answercam(req,res);
+})
+
+app.post('/newuser', async (req, res) => {
+  await newuser(req,res);
+})
+
+app.post('/newcam', async (req, res) => {
+  await newcam(req,res);
+})
+
+app.delete('/deletecam',async (req,res)=>{
+  await deletecam(req,res);
+})
+
+app.delete('/deleteuser',async (req,res)=>{
+  await deleteuser(req,res);  
+})
+
+
+app.listen(port, () => {
+  console.log(`Listening at ${port}`)
+})
+
