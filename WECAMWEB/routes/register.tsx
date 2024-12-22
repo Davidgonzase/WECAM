@@ -1,6 +1,7 @@
 import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
 import { setCookie } from "$std/http/cookie.ts";
 
+
 type context = {
   message: string;
 };
@@ -12,59 +13,63 @@ export const handler: Handlers = {
   POST: async (req: Request, ctx: FreshContext<context>) => {
     const form = await req.formData();
     const email = form.get("email");
+    const name = form.get("name");
     const password = form.get("password");
     const api = Deno.env.get("API_URL");
     if (!api || api == "") {
       return ctx.render({ message: "No API_URL found" });
     }
 
-    const res = await fetch(api + "checkuser", {
+    const res = await fetch(api + "newuser", {
       headers: {
-        "Content-Type": "aplication/json",
+        "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({email, password}),
+      body: JSON.stringify({ name:name, email:email, password:password }),
     });
 
-    if (res.status == 200) {
-      const data = await res.json() as user;
-      const secret = Deno.env.get("SECRET");
-      if (!secret || secret == "") {
-        return ctx.render({ message: "No SECRET found" });
-      }
-      const token = jwt.sign(
-        {
-          email,
-          id: data.id,
-          name: data.name,
-        },
-        secret,
-        {
-          expiresIn: "24h",
-        },
-      );
+    const data = await res.json();
 
-      const headers = new Headers();
-      const url = new URL(req.url);
-
-      setCookie(headers, {
-        name: "auth",
-        value: token,
-        sameSite: "Lax",
-        domain: url.hostname,
-        path: "/",
-        secure: true,
+    if (data.status == 200) {
+      const reslogin = await fetch(api + "login", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ email:email, password:password }),
       });
 
-      headers.set("location", "/videos");
-      return new Response(null, {
+      const datalogin = await reslogin.json();
+
+      if(datalogin.status == 200){
+
+        const headers = new Headers();
+        const url = new URL(req.url);
+        
+        setCookie(headers, {
+          name: "auth",
+          value: datalogin.content.jwttoken,
+          sameSite: "Lax",
+          domain: url.hostname,
+          path: "/",
+          secure: true,
+        });
+  
+        headers.set("location", "/webcams");
+        return new Response(null, {
         status: 303,
         headers,
-      });
-    } else if (res.status == 400 || res.status == 404) {
-      return ctx.render({ message: "User not found" });
+        });
+
+      }else{
+        return ctx.render({message:"INTERNAL ERROR"})
+      }
+
     } else {
-      return ctx.render({ message: "Internal Error" });
+      if(data.error){
+        return ctx.render({ message: data.error});
+      }
+      return ctx.render({message:"INTERNAL ERROR"})
     }
   },
 };
@@ -83,6 +88,7 @@ export default function Page(props: PageProps<context>) {
           <label form="Password">Password</label>
           <input type="Password" id="password" name="password" required="" />
           <button type="submit">ENTRAR</button>
+          {props.data.message}
         </form>
       </div>
     </div>

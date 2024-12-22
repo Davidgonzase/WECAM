@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 const app = express()
 app.use(express.json())
-const port = 8000
+const port = 8010
 
 import login from './resolver/get/login.js';
 import verify from './resolver/get/verify.js';
@@ -29,15 +29,15 @@ app.get('/', (req, res) => {
   res.send(response);
 })
 
-app.get('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   await login(req,res);
 })
 
-app.get('/verify', async (req, res) => {
+app.post('/verify', async (req, res) => {
   await verify(req,res);
 })
 
-app.get('/pcstatus',(req,res)=>{
+app.post('/pcstatus',(req,res)=>{
   pcstatus(req,res);
 })
 

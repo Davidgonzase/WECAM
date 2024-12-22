@@ -1,21 +1,23 @@
-import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
+import { FreshContext, Handlers, PageProps } from "$fresh/src/server/types.ts";
+import { user } from "../types.ts";
 
-type context = {
-    
+export type context = {
+  name:string 
 };
+
 
 export const handler: Handlers = {
-  GET: (req: Request, ctx: FreshContext<context>) => {
-    return ctx.render({});
-  },
-  POST: async (req: Request, ctx: FreshContext<context>) => {
-
+  GET: async (req: Request, ctx: FreshContext<user,context>) => {
+    return ctx.render({name:ctx.state.name});
   },
 };
+
+
 
 export default function Page(props: PageProps<context>) {
   return (
     <div class="fullpage">
+      {props.data.name}
     </div>
   );
 }
