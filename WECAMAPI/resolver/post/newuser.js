@@ -8,7 +8,6 @@ async function newuser(req, res) {
         content: null,
         error: null,
     };
-    
     const { name, password, email } = req.body;
     if (!name || !password || !email) {
         response.status = 400;

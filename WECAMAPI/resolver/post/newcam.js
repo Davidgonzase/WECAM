@@ -1,5 +1,6 @@
 import { userModel } from "../../dbschema.js";
 import { camModel } from "../../dbschema.js";
+import { sdpModel } from "../../dbschema.js";
 
 async function newcam(req, res) {
     const response = {
@@ -7,16 +8,16 @@ async function newcam(req, res) {
         content: null,
         error: null,
     };
-    const { jwttoken, name, camoffer } = req.body;
-    if (!jwttoken || !name || !camoffer) {
+    const { jwttoken, name, sdp} = req.body;
+    console.log(name)
+    if (!jwttoken || !name || !sdp) {
         response.status = 400;
         response.error = "Missing properties";
         return res.send(response);
     }
-
     try {
         try {
-            const decoded = jwt.verify(jwttoken, JWTSECRET);
+            const decoded = jwt.verify(toString(jwttoken), JWTSECRET);
             try {
                 const currentuser = await userModel.findById(decoded.id)
                 if(!currentuser)throw Error("Not found")
@@ -29,17 +30,19 @@ async function newcam(req, res) {
                     return res.send(response); 
                 }
 
-                const newCam = new camModel({
-                    name,
-                    camoffer
-                });
-                await newCam.save();
+                const newcam = new camModel({
+                    name:name,
+                    camoffer:sdp
+                })
 
-                currentuser.cams.push(newCam.id);
-                await currentuser.save();
+                newcam.save();
+
+                currentuser.cams.push(newcam.id);
 
                 response.error = "Ok";
+                response.content=newcam.id
                 return res.send(response); 
+
             } catch (error) {
                 response.status = 404;
                 response.error = "User not found";

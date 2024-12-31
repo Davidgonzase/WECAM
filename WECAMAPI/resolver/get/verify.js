@@ -9,8 +9,8 @@ async function verify(req,res){
         content: null,
         error: null,
     };
-    const {jwttoken} = req.body
-    if(!jwttoken){
+    const {jwttoken,name} = req.body
+    if(!jwttoken||!name){
         response.status = 400;
         response.error = "Missing properties";
         return res.send(response);
@@ -19,8 +19,14 @@ async function verify(req,res){
         try {
             const decoded = jwt.verify(jwttoken, JWTSECRET);
             try {
-                const currentuser = await userModel.findById(decoded.id)
-                if(!currentuser)throw Error("Not found")
+                const currentuser = await userModel.findById(decoded.id).populate("cams");
+                if(!currentuser)throw Error("Not found");
+                const exists = currentuser.cams.find((cams) => cams.name === name);
+                if(exists){
+                    response.status = 403;
+                    response.error = "Cam already exists";
+                    return res.send(response);
+                }
                 response.error = "Ok";
                 return res.send(response); 
             } catch (error) {

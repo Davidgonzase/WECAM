@@ -13,11 +13,20 @@ const userModel = model('user',userSchema);
 
 const camSchema = new Schema({
     name: { type: String, required: true },
-    camoffer: { type: String },
-    vieweranswer : { type: String },
+    camoffer: {type: String},
+    vieweranswer : {type: String},
+    icesendercandidates:[{ type: Schema.Types.ObjectId, ref:'spd'}],
+    iceviewercandidates:[{ type: Schema.Types.ObjectId, ref:'spd'}]
 });
-
 const camModel = model('camera',camSchema);
 
-export {userModel,camModel};
+const sdpSchema = new Schema({
+    sdp: { type: String, required: true },
+    sdpmid: { type: String, required: true },
+    sdpmlineindex : { type: String, required: true },
+});
+
+const sdpModel = model('sdp',sdpSchema);
+
+export {userModel,camModel,sdpModel};
 

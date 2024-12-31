@@ -33,7 +33,7 @@ export const handler: Handlers = {
 
       const headers = new Headers();
       const url = new URL(req.url);
-      console.log(datalogin.content.jwttoken)
+      
       setCookie(headers, {
         name: "auth",
         value: datalogin.content.jwttoken,
