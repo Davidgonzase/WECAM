@@ -6,12 +6,14 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_middleware from "./routes/_middleware.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
+import * as $cameras_id_ from "./routes/cameras/[id].tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $webcams from "./routes/webcams.tsx";
 import * as $Counter from "./islands/Counter.tsx";
+import * as $video from "./islands/video.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -20,6 +22,7 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_middleware.tsx": $_middleware,
     "./routes/api/joke.ts": $api_joke,
+    "./routes/cameras/[id].tsx": $cameras_id_,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/login.tsx": $login,
@@ -28,6 +31,7 @@ const manifest = {
   },
   islands: {
     "./islands/Counter.tsx": $Counter,
+    "./islands/video.tsx": $video,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

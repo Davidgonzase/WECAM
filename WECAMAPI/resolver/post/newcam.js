@@ -1,6 +1,8 @@
+import jwt from 'jsonwebtoken';
+
 import { userModel } from "../../dbschema.js";
 import { camModel } from "../../dbschema.js";
-import { sdpModel } from "../../dbschema.js";
+import { JWTSECRET } from "../../index.js"
 
 async function newcam(req, res) {
     const response = {
@@ -8,22 +10,21 @@ async function newcam(req, res) {
         content: null,
         error: null,
     };
-    const { jwttoken, name, sdp} = req.body;
-    console.log(name)
-    if (!jwttoken || !name || !sdp) {
+    const jwttoken = String(req.body.jwttoken);
+    const name = String(req.body.name);
+    const sdp = String(req.body.sdp);
+    if (!jwttoken || !name) {
         response.status = 400;
         response.error = "Missing properties";
         return res.send(response);
     }
     try {
         try {
-            const decoded = jwt.verify(toString(jwttoken), JWTSECRET);
+            const decoded = jwt.verify(jwttoken, JWTSECRET);
             try {
                 const currentuser = await userModel.findById(decoded.id)
                 if(!currentuser)throw Error("Not found")
-
                 const found = await camModel.findOne({ _id: { $in: currentuser.cams }, name });
-
                 if(found){
                     response.status = 400;
                     response.error = "PC already exist";
@@ -32,18 +33,20 @@ async function newcam(req, res) {
 
                 const newcam = new camModel({
                     name:name,
-                    camoffer:sdp
                 })
 
-                newcam.save();
-
+                await newcam.save();
+                currentuser.email=currentuser.email;
                 currentuser.cams.push(newcam.id);
 
+                await currentuser.save();
+                
                 response.error = "Ok";
-                response.content=newcam.id
+                response.content=newcam.id;
                 return res.send(response); 
 
             } catch (error) {
+                console.log(error)
                 response.status = 404;
                 response.error = "User not found";
                 return res.send(response); 

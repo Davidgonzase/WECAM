@@ -4,56 +4,80 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>com.davidgonzase</groupId>
     <artifactId>wecamapp</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <properties>
-        <!-- Versión de Java -->
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.release>11</maven.compiler.release>
-    </properties>
-
     <dependencies>
-        <!-- Dependencia para la codificación y decodificación de video -->
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.79</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jcodec</groupId>
             <artifactId>jcodec</artifactId>
             <version>0.2.4</version>
         </dependency>
 
-        <!-- Dependencia para WebRTC en Java -->
         <dependency>
             <groupId>dev.onvoid.webrtc</groupId>
             <artifactId>webrtc-java</artifactId>
             <version>0.8.0</version>
         </dependency>
 
-        <!-- Dependencia para el manejo de logs -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.9</version>
         </dependency>
 
-        <!-- Dependencia para capturar imágenes desde la webcam -->
-        <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture</artifactId>
-            <version>0.3.12</version>
-        </dependency>
-
-        <!-- Dependencia para trabajar con JSON -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.9</version>
         </dependency>
 
-        
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.9.4</version>
+        </dependency>
 
-
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.70</version>
+        </dependency>
     </dependencies>
+
+
+   <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.davidgonzase.App</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

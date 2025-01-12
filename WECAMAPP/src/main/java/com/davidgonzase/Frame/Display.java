@@ -3,22 +3,21 @@ package com.davidgonzase.Frame;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.image.BufferedImage;
+import java.awt.image.MemoryImageSource;
 
 import com.google.gson.Gson;
-
-import dev.onvoid.webrtc.media.video.VideoCapture;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.stream.Stream;
+import java.nio.ByteBuffer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,16 +26,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
+import com.davidgonzase.RTCPage;
 import com.davidgonzase.RTCStream;
-import com.davidgonzase.Frame.Display.JWT;
-import com.davidgonzase.Frame.Display.LoginErrorResponse;
-import com.davidgonzase.Frame.Display.LoginJWTResponse;
-import com.davidgonzase.Frame.Display.StatusResponse;
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
+
+import dev.onvoid.webrtc.PeerConnectionFactory;
+import dev.onvoid.webrtc.media.MediaDevices;
+
+import dev.onvoid.webrtc.media.video.I420Buffer;
+import dev.onvoid.webrtc.media.video.VideoDevice;
+import dev.onvoid.webrtc.media.video.VideoDeviceSource;
+
+import dev.onvoid.webrtc.media.video.VideoFrame;
+import dev.onvoid.webrtc.media.video.VideoTrack;
+import dev.onvoid.webrtc.media.video.VideoTrackSink;
 
 public class Display {
     private JFrame window;
@@ -50,6 +53,7 @@ public class Display {
     }
 
     public Display() {
+
         window = new JFrame("Wecamapp");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(600, 800);
@@ -162,14 +166,15 @@ public class Display {
                         Gson gsonresult = new Gson();
                         StatusResponse responseData = gsonresult.fromJson(resbody, StatusResponse.class);
 
-                        if(responseData.status==200){
+                        if (responseData.status == 200) {
                             LoginJWTResponse responseJWTData = gsonresult.fromJson(resbody, LoginJWTResponse.class);
-                            jwt= responseJWTData.content.jwttoken;
-                            if(jwt!=""){
+                            jwt = responseJWTData.content.jwttoken;
+                            if (jwt != "") {
                                 Stream();
                             }
-                        }else{
-                            LoginErrorResponse responseErrorData = gsonresult.fromJson(resbody, LoginErrorResponse.class);
+                        } else {
+                            LoginErrorResponse responseErrorData = gsonresult.fromJson(resbody,
+                                    LoginErrorResponse.class);
                             errorLabel.setText(responseErrorData.error);
                         }
                     }
@@ -186,9 +191,7 @@ public class Display {
         currentscreen = Screens.LOGIN;
     }
 
-
-    private void Stream(){
-
+    private void Stream() {
         con.removeAll();
 
         panel = new JPanel();
@@ -201,10 +204,7 @@ public class Display {
         panel.setBounds(0, 0, window.getBounds().width, window.getBounds().height);
         panel.setBackground(Color.black);
 
-        VideoCapture capture = new VideoCapture(640, 480);
-
-        JLabel webcamPanel = new JLabel(new ImageIcon()); 
-
+        JLabel webcamPanel = new JLabel(new ImageIcon());
         webcamPanel.setBounds(0, 0, 1280, 720);
 
         JTextField nameLabel = new JTextField("Name");
@@ -265,12 +265,13 @@ public class Display {
                         Gson gsonresult = new Gson();
                         StatusResponse responseData = gsonresult.fromJson(resbody, StatusResponse.class);
 
-                        if(responseData.status==200){
+                        if (responseData.status == 200) {
                             errorLabel.setText("OK");
                             errorLabel.setForeground(Color.green);
-                            startstream();
-                        }else{
-                            LoginErrorResponse responseErrorData = gsonresult.fromJson(resbody, LoginErrorResponse.class);
+                            startstream(errorLabel, namecontent);
+                        } else {
+                            LoginErrorResponse responseErrorData = gsonresult.fromJson(resbody,
+                                    LoginErrorResponse.class);
                             errorLabel.setText(responseErrorData.error);
                             errorLabel.setForeground(Color.red);
                         }
@@ -293,38 +294,16 @@ public class Display {
         window.getContentPane().validate();
 
         repaint();
-
-        new Thread(() -> {
-        try (OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(0)) {
-            grabber.start();
-            Java2DFrameConverter converter = new Java2DFrameConverter();
-            while (true) {
-                Frame frame = grabber.grab();
-                if (frame != null) {
-                    BufferedImage image = converter.convert(frame);
-                    if (image != null) {
-                        SwingUtilities.invokeLater(() -> webcamPanel.setIcon(new ImageIcon(image)));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        }).start();
-
     }
-
-    
 
     private void repaint() {
         window.revalidate();
         window.repaint();
     }
 
-    private void startstream() {
+    private void startstream(JLabel label, String name) {
         new Thread(() -> {
-            RTCStream stream = new RTCStream();
-            stream.start();
+            RTCPage stream = new RTCPage(jwt, name);
         }).start();
     }
 
@@ -344,12 +323,4 @@ public class Display {
     static class JWT {
         String jwttoken;
     }
-
-    public static BufferedImage captureFrame(Webcam webcam) {
-        if (webcam != null && webcam.isOpen()) {
-            return webcam.getImage();
-        }
-        throw new IllegalStateException("Webcam is not open or available");
-    }
-
 }

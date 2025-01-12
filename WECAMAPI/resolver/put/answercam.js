@@ -1,5 +1,6 @@
 import { userModel } from "../../dbschema.js";
 import { camModel } from "../../dbschema.js";
+import { JWTSECRET } from "../../index.js"
 
 async function answercam(req, res) {
     const response = {
@@ -23,7 +24,6 @@ async function answercam(req, res) {
                     const cam = await camModel.findById(id)
                     cam.vieweranswer=vieweranswer;
                     await cam.save();
-
                     response.content = "OK";
                     return res.send(response); 
                 } catch (error) {

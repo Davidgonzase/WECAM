@@ -18,7 +18,7 @@ const camSchema = new Schema({
     icesendercandidates:[{ type: Schema.Types.ObjectId, ref:'spd'}],
     iceviewercandidates:[{ type: Schema.Types.ObjectId, ref:'spd'}]
 });
-const camModel = model('camera',camSchema);
+const camModel = model('camera',camSchema); 
 
 const sdpSchema = new Schema({
     sdp: { type: String, required: true },

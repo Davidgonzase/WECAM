@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WebRTC Stream</title>
+        <style>
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Stream</h1>
+        <video id="localVideo" autoplay playsinline></video>
+        <p id="status">Loading video...</p>
+        <script>
+        const localVideo = document.getElementById("localVideo")
+        const status = document.getElementById("status")
+        const title = document.getElementById("title")
+
+        const urlObj = new URL(window.location.href); 
+        const params = new URLSearchParams(urlObj.search); 
+
+        const jwt = params.get('token'); 
+        const name = params.get('name'); 
+
+        let currentice = 0
+        let cameraid = null
+
+        title.textContent = title.textContent + name
+
+         const peerConnection = new RTCPeerConnection({
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
+        });
+
+        let stopFetchingCandidates = false;
+        let stopFetchingsdp = false;
+
+        peerConnection.onconnectionstatechange = () => {
+            if (peerConnection.connectionState === 'connected' || peerConnection.connectionState === 'completed') {
+                console.log('Conexión establecida, deteniendo búsqueda de candidatos.');
+                stopFetchingCandidates = true;
+            }
+        };
+
+        peerConnection.oniceconnectionstatechange = () => {
+            console.log('ICE connection state:', peerConnection.iceConnectionState);
+            if (peerConnection.iceConnectionState === 'connected' || peerConnection.iceConnectionState === 'completed') {
+                stopFetchingCandidates = true;
+            }
+        };
+
+        async function createAndSendOffer() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                localVideo.srcObject = stream
+
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream))
+
+                const offer = await peerConnection.createOffer()
+                await peerConnection.setLocalDescription(offer)
+
+                if(!jwt || jwt == ""){
+                    status.textContent = "Missing components"
+                }else{
+                    await newcam()
+                    if(cameraid){
+                        status.textContent = "Camera ready..."
+
+                        await new Promise(resolve => {
+                            peerConnection.onicegatheringstatechange = () => {
+                                if (peerConnection.iceGatheringState === 'complete') {
+                                    resolve();
+                                }
+                            };
+                        });
+                        status.textContent = "Searching for peer..."
+                        answersdp(peerConnection.localDescription.sdp)
+                        requestSdpResponse()
+
+                    }else{
+                        status.textContent = "Failed y ..."
+                    }
+                }
+
+
+            } catch (error) {
+                console.error('Error al crear la oferta:', error)
+                status.textContent = 'Error al crear la oferta.'
+            }
+        }
+
+        async function newcam() {
+            try {
+                console.log("jwt :" + jwt)
+                const response = await fetch('http://localhost:8010/newcam', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jwttoken:jwt,name:name })
+                });
+
+                const data = await response.json()
+                if(data.status==200)cameraid = data.content
+                console.log('Camara creada:', cameraid)
+            } catch (error) {
+                console.error('Error al enviar cam a la API:', error)
+            }
+        }
+
+        async function requestSdpResponse() {
+            while (!stopFetchingsdp) {
+                try {
+                    const response = await fetch('http://localhost:8010/camera', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jwttoken:jwt,cameraid:cameraid })
+                    });
+                    const data = await response.json()
+                    const sdpAnswer = data.content.vieweranswer
+
+                    if (sdpAnswer) {
+                        stopFetchingsdp=true;
+                        console.log('SDP de respuesta recibido:', sdpAnswer)
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: sdpAnswer }))
+                        status.textContent = 'Conexión WebRTC establecida.'
+                        fetchAndSendCandidates()
+                    }
+
+                } catch (error) {
+                    console.error('Error al obtener SDP de respuesta:', error)
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            console.log('Búsqueda de candidatos detenida.');
+        }
+
+        async function answersdp(sdp) {
+            try {
+                console.log("jwt :" + jwt)
+                const response = await fetch('http://localhost:8010/putsdp', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jwttoken:jwt,cameraid:cameraid,sdp:sdp,type:"sender"})
+                });
+            } catch (error) {
+                console.error('Error al enviar SDP a la API:', error)
+            }
+        }
+
+        createAndSendOffer();
+    </script>
+    </body>
+</html>
