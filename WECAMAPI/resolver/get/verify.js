@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { userModel } from '../../dbschema.js';
-import { JWTSECRET } from "../../index.js"
+import { JWTSECRET } from "../../src/main/index.js"
 
 async function verify(req,res){
     const response = {

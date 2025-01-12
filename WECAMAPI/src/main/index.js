@@ -7,14 +7,14 @@ const app = express()
 app.use(express.json())
 const port = 8010
 
-import login from './resolver/get/login.js';
-import camera from './resolver/get/getcaminfo.js';
-import verify from './resolver/get/verify.js';
-import cams from './resolver/get/getcams.js';
-import putsdp from './resolver/put/putsdp.js'
-import deleteuser from './resolver/delete/deleteuser.js'
-import newuser from './resolver/post/newuser.js'
-import newcam from './resolver/post/newcam.js'
+import login from '../../resolver/get/login.js';
+import camera from '../../resolver/get/getcaminfo.js';
+import verify from '../../resolver/get/verify.js';
+import cams from '../../resolver/get/getcams.js';
+import putsdp from '../../resolver/put/putsdp.js'
+import deleteuser from '../../resolver/delete/deleteuser.js'
+import newuser from '../../resolver/post/newuser.js'
+import newcam from '../../resolver/post/newcam.js'
 
 await dotenv.config();
 const MDKEY = process.env.mongodb_key;
