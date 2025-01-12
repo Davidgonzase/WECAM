@@ -50,6 +50,14 @@
             }
         };
 
+        peerConnection.oniceconnectionstatechange = () => {
+            console.log('ICE connection state:', peerConnection.iceConnectionState);
+            if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'disconnected') {
+                stopFetchingCandidates = false;
+                requestSdpResponse();
+            }
+        };
+
         async function createAndSendOffer() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
