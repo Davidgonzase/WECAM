@@ -30,6 +30,7 @@ export async function handler(req: Request, ctx: FreshContext<user>) {
       headers,
     });
   }
+  
   const verify = jwt.verify(auth, Deno.env.get("jwt_secret"));
   if (!verify) {
     headers.set("location", "/login");
