@@ -54,15 +54,12 @@
             console.log('ICE connection state:', peerConnection.iceConnectionState);
             if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'disconnected') {
                 stopFetchingCandidates = false;
-                requestSdpResponse();
+                createAndSendOffer();
             }
         };
 
         async function createAndSendOffer() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-                localVideo.srcObject = stream
-
                 stream.getTracks().forEach(track => peerConnection.addTrack(track, stream))
 
                 const offer = await peerConnection.createOffer()
