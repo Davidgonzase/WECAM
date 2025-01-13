@@ -1,6 +1,6 @@
 import { userModel } from "../../dbschema.js";
 import { camModel } from "../../dbschema.js";
-import { JWTSECRET } from "../../src/main/index.js"
+import { JWTSECRET } from "../../index.js"
 
 async function answercam(req, res) {
     const response = {

@@ -35,6 +35,7 @@ export const Stream: FunctionComponent<Context> = (props) => {
         const offerSdp = data.content.camoffer;
 
         console.log(data)
+        console.log(offerSdp)
 
         if (offerSdp) {
           await peerConnection.setRemoteDescription({ type: "offer", sdp: offerSdp });

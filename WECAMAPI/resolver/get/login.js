@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 import { userModel } from "../../dbschema.js";
-import { JWTSECRET } from "../../src/main/index.js"
+import { JWTSECRET } from "../../index.js"
 
 async function login(req,res){
     const response = {

@@ -25,16 +25,18 @@
         let currentice = 0
         let cameraid = null
 
+        let stream = null
+
         title.textContent = title.textContent + name
 
-         const peerConnection = new RTCPeerConnection({
+         let peerConnection = new RTCPeerConnection({
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' }
             ]
         });
 
         let stopFetchingCandidates = false;
-        let stopFetchingsdp = false;
+        let stopFetchingsdp = true;
 
         peerConnection.onconnectionstatechange = () => {
             if (peerConnection.connectionState === 'connected' || peerConnection.connectionState === 'completed') {
@@ -53,16 +55,27 @@
         peerConnection.oniceconnectionstatechange = () => {
             console.log('ICE connection state:', peerConnection.iceConnectionState);
             if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'disconnected') {
-                stopFetchingCandidates = false;
-                requestSdpResponse();
+                console.log("Restarting...")
+                stopFetchingsdp = true;
+                sdpAnswer=null;
+                deleteremote();
+                restart();
             }
         };
 
+        async function deleteremote() {
+            const response = await fetch('http://localhost:8010/deleteremote', {
+                method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jwttoken:jwt,cameraid:cameraid })
+            });
+        }
+
+
         async function createAndSendOffer() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                 localVideo.srcObject = stream
-
                 stream.getTracks().forEach(track => peerConnection.addTrack(track, stream))
 
                 const offer = await peerConnection.createOffer()
@@ -98,6 +111,55 @@
             }
         }
 
+        async function restart(){
+                if (peerConnection.remoteDescription) {
+                    console.log("Eliminando descripción remota...");
+                    peerConnection.restartIce();
+                    peerConnection.close();
+                }
+
+                peerConnection = new RTCPeerConnection({
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' }
+                ]})
+
+                peerConnection.oniceconnectionstatechange = () => {
+                    console.log('ICE connection state:', peerConnection.iceConnectionState);
+                    if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'disconnected') {
+                        console.log("Restarting...")
+                        stopFetchingsdp = true;
+                        sdpAnswer=null;
+                        deleteremote();
+                        restart();
+                    }
+                };
+
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream))
+
+                const offer = await peerConnection.createOffer()
+                await peerConnection.setLocalDescription(offer)
+
+                if(!jwt || jwt == ""){
+                    status.textContent = "Missing components"
+                }else{
+                    if(cameraid){
+                        status.textContent = "Camera ready..."
+                        peerConnection.restartIce();
+                        console.log(peerConnection.iceGatheringState)
+                        await new Promise(resolve => {
+                            peerConnection.onicegatheringstatechange = () => {
+                                if (peerConnection.iceGatheringState === 'complete') {
+                                    resolve();
+                                }
+                            };
+                        });
+                        status.textContent = "Searching for peer..."
+                        answersdp(peerConnection.localDescription.sdp)
+                        requestSdpResponse()
+                    }
+                }
+        }
+
         async function newcam() {
             try {
                 console.log("jwt :" + jwt)
@@ -116,7 +178,8 @@
         }
 
         async function requestSdpResponse() {
-            while (!stopFetchingsdp) {
+            while (stopFetchingsdp) {
+                console.log("Searching for response...")
                 try {
                     const response = await fetch('http://localhost:8010/camera', {
                         method: 'POST',
@@ -125,13 +188,12 @@
                     });
                     const data = await response.json()
                     const sdpAnswer = data.content.vieweranswer
-
+                    console.log(sdpAnswer)
                     if (sdpAnswer) {
-                        stopFetchingsdp=true;
+                        stopFetchingsdp=false;
                         console.log('SDP de respuesta recibido:', sdpAnswer)
                         await peerConnection.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: sdpAnswer }))
                         status.textContent = 'Conexión WebRTC establecida.'
-                        fetchAndSendCandidates()
                     }
 
                 } catch (error) {
@@ -145,7 +207,7 @@
 
         async function answersdp(sdp) {
             try {
-                console.log("jwt :" + jwt)
+                console.log('SDP de respuesta enviado:', sdp)
                 const response = await fetch('http://localhost:8010/putsdp', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -155,7 +217,6 @@
                 console.error('Error al enviar SDP a la API:', error)
             }
         }
-
         createAndSendOffer();
     </script>
     </body>

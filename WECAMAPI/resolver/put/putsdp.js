@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { userModel } from "../../dbschema.js";
 import { camModel} from "../../dbschema.js";
 import { sdpModel } from "../../dbschema.js";
-import { JWTSECRET } from "../../src/main/index.js";
+import { JWTSECRET } from "../../index.js";
 
 async function putsdp(req, res) {
     const response = {

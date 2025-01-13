@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { userModel } from '../../dbschema.js';
-import { JWTSECRET } from "../../src/main/index.js"
+import { JWTSECRET } from "../../index.js"
 
 async function cams(req,res){
     const response = {
