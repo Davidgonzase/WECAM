@@ -150,7 +150,7 @@ public class Display {
                     String jsonBody = "{\"password\":\"" + passwordcontent + "\", \"email\":\"" + usercontent + "\"}";
 
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create("http://localhost:8010/login"))
+                            .uri(URI.create("https://wecam.onrender.com/login"))
                             .header("Content-Type", "application/json")
                             .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                             .build();
@@ -249,7 +249,7 @@ public class Display {
                     String jsonBody = "{\"jwttoken\":\"" + jwt + "\", \"name\":\"" + namecontent + "\"}";
 
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create("http://localhost:8010/verify"))
+                            .uri(URI.create("https://wecam.onrender.com/verify"))
                             .header("Content-Type", "application/json")
                             .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                             .build();

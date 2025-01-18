@@ -49,6 +49,7 @@ public class RTCStream {
                 VideoTrackSink sink = new VideoTrackSink() {
                     @Override
                     public void onVideoFrame(VideoFrame frame) {
+
                     }
                 };
 

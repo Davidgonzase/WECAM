@@ -8,7 +8,7 @@
         </style>
     </head>
     <body>
-        <h1 id="title">Stream</h1>
+        <h1 id="title">Stream </h1>
         <video id="localVideo" autoplay playsinline></video>
         <p id="status">Loading video...</p>
         <script>
@@ -64,7 +64,7 @@
         };
 
         async function deleteremote() {
-            const response = await fetch('http://localhost:8010/deleteremote', {
+            const response = await fetch('https://wecam.onrender.com/deleteremote', {
                 method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ jwttoken:jwt,cameraid:cameraid })
@@ -107,7 +107,7 @@
 
             } catch (error) {
                 console.error('Error al crear la oferta:', error)
-                status.textContent = 'Error al crear la oferta.'
+                status.textContent = 'Failed to create offer'
             }
         }
 
@@ -163,7 +163,7 @@
         async function newcam() {
             try {
                 console.log("jwt :" + jwt)
-                const response = await fetch('http://localhost:8010/newcam', {
+                const response = await fetch('https://wecam.onrender.com/newcam', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ jwttoken:jwt,name:name })
@@ -181,7 +181,7 @@
             while (stopFetchingsdp) {
                 console.log("Searching for response...")
                 try {
-                    const response = await fetch('http://localhost:8010/camera', {
+                    const response = await fetch('https://wecam.onrender.com/camera', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ jwttoken:jwt,cameraid:cameraid })
@@ -193,7 +193,7 @@
                         stopFetchingsdp=false;
                         console.log('SDP de respuesta recibido:', sdpAnswer)
                         await peerConnection.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: sdpAnswer }))
-                        status.textContent = 'Conexión WebRTC establecida.'
+                        status.textContent = ' WebRTC connection established'
                     }
 
                 } catch (error) {
@@ -208,7 +208,7 @@
         async function answersdp(sdp) {
             try {
                 console.log('SDP de respuesta enviado:', sdp)
-                const response = await fetch('http://localhost:8010/putsdp', {
+                const response = await fetch('https://wecam.onrender.com/putsdp', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ jwttoken:jwt,cameraid:cameraid,sdp:sdp,type:"sender"})

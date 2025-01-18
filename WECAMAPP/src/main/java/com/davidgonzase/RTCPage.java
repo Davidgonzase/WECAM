@@ -1,6 +1,7 @@
 package com.davidgonzase;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,10 +11,12 @@ import java.nio.file.Paths;
 public class RTCPage {
     public RTCPage(String jwt, String name) {
         int port = 4578;
-        String htmlFilePath = "src/main/java/com/davidgonzase/index.html";
         com.sun.net.httpserver.HttpServer server;
         try {
-            server = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress(port), 0);
+            String jarDir = new File(RTCPage.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+                    .getParent();
+            String htmlFilePath = jarDir + File.separator + "index.html";
+            server = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("0.0.0.0", port), 0);
             server.createContext("/", exchange -> {
                 System.out.println("Request received: " + exchange.getRequestURI());
                 String query = exchange.getRequestURI().getQuery();
@@ -33,6 +36,11 @@ public class RTCPage {
             server.setExecutor(null);
             server.start();
 
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+            }
+
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {
                     Desktop.getDesktop()
@@ -41,8 +49,11 @@ public class RTCPage {
                     System.out.println(ex.getMessage());
                 }
             }
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (URISyntaxException e1) {
+            System.out.println(e1.getMessage());
         }
     }
 
