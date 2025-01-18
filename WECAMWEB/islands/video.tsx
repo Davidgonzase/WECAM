@@ -3,13 +3,14 @@ import { FunctionComponent } from "preact";
 type Context = {
   jwt: string;
   id: string;
-  name: string
+  name: string;
 };
 
 export const Stream: FunctionComponent<Context> = (props) => {
   const scriptContent = `
     const status = document.getElementById("status");
     const videoElement = document.getElementById("remoteVideo");
+    const fullscreenButton = document.getElementById("fullscreenButton");
 
     const peerConnection = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -79,6 +80,27 @@ export const Stream: FunctionComponent<Context> = (props) => {
     }
 
     fetchOffer();
+
+    // Fullscreen functionality
+    fullscreenButton.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        if (videoElement.requestFullscreen) {
+          videoElement.requestFullscreen();
+        } else if (videoElement.webkitRequestFullscreen) {
+          videoElement.webkitRequestFullscreen();
+        } else if (videoElement.msRequestFullscreen) {
+          videoElement.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    });
   `;
 
   return (
@@ -86,6 +108,7 @@ export const Stream: FunctionComponent<Context> = (props) => {
       <h1>Stream {props.name}</h1>
       <video id="remoteVideo" autoplay playsinline></video>
       <p id="status">Initializing...</p>
+      <button id="fullscreenButton">Pantalla Completa</button>
       <script dangerouslySetInnerHTML={{ __html: scriptContent }}></script>
     </div>
   );
