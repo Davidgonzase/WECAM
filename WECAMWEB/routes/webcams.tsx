@@ -1,15 +1,17 @@
 import { FreshContext, Handlers, PageProps } from "$fresh/src/server/types.ts";
 import { getCookies } from "$std/http/cookie.ts";
-import { Camsdiv } from "../components/cameraslist.tsx"
-import { user,camsresponse,cam} from "../types.ts";
+import { useSignal } from "https://esm.sh/v135/@preact/signals@1.2.2/X-ZS8q/dist/signals.js";
+import { Camsdiv } from "../islands/cameraslist.tsx";
+import { Reload } from "../islands/ReloadCams.tsx";
+import { cam, camsresponse, user } from "../types.ts";
 
 export type context = {
-  arrid:cam[] 
+  arrid: cam[];
+  auth: string;
 };
 
-
 export const handler: Handlers = {
-  GET: async (req: Request, ctx: FreshContext<user,context>) => {
+  GET: async (req: Request, ctx: FreshContext<user, context>) => {
     const api = Deno.env.get("API_URL");
     if (!api || api == "") {
       return ctx.render();
@@ -20,19 +22,24 @@ export const handler: Handlers = {
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ jwttoken:auth }),
+      body: JSON.stringify({ jwttoken: auth }),
     });
     const camscontent = await camsapi.json() as camsresponse;
-    return ctx.render({arrid:camscontent.content});
+    return ctx.render({ arrid: camscontent.content, auth: auth });
   },
 };
 
-
-
 export default function Page(props: PageProps<context>) {
+  const cameras = useSignal<cam[]>(props.data.arrid);
   return (
-    <div class="fullpagenotcenter">
-      <Camsdiv videos={props.data.arrid} />
+    <div class="centerall">
+      <div class="camerasdiv">
+        <div class="uppercameras">
+          <text>My cameras</text>
+          <Reload req={props.data.auth} videos={cameras} />
+        </div>
+        <Camsdiv videos={cameras} />
+      </div>
     </div>
   );
 }

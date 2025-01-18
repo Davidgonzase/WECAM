@@ -3,6 +3,7 @@ import { FunctionComponent } from "preact";
 type Context = {
   jwt: string;
   id: string;
+  name: string
 };
 
 export const Stream: FunctionComponent<Context> = (props) => {
@@ -17,7 +18,7 @@ export const Stream: FunctionComponent<Context> = (props) => {
     peerConnection.ontrack = (event) => {
       console.log("Receiving remote stream...");
       videoElement.srcObject = event.streams[0];
-      status.textContent = "Stream received!";
+      status.textContent = "Stream ready";
     };
 
     async function fetchOffer() {
@@ -81,10 +82,10 @@ export const Stream: FunctionComponent<Context> = (props) => {
   `;
 
   return (
-    <div>
-      <h1>Receiving WebRTC Stream</h1>
-      <p id="status">Initializing...</p>
+    <div class="cameralive">
+      <h1>Stream {props.name}</h1>
       <video id="remoteVideo" autoplay playsinline></video>
+      <p id="status">Initializing...</p>
       <script dangerouslySetInnerHTML={{ __html: scriptContent }}></script>
     </div>
   );

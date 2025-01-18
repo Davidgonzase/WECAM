@@ -4,8 +4,9 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
+import * as $_layout from "./routes/_layout.tsx";
 import * as $_middleware from "./routes/_middleware.tsx";
-import * as $api_joke from "./routes/api/joke.ts";
+import * as $api_getcams from "./routes/api/getcams.ts";
 import * as $cameras_id_ from "./routes/cameras/[id].tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
@@ -13,6 +14,9 @@ import * as $login from "./routes/login.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $webcams from "./routes/webcams.tsx";
 import * as $Counter from "./islands/Counter.tsx";
+import * as $Logout from "./islands/Logout.tsx";
+import * as $ReloadCams from "./islands/ReloadCams.tsx";
+import * as $cameraslist from "./islands/cameraslist.tsx";
 import * as $video from "./islands/video.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -20,8 +24,9 @@ const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
+    "./routes/_layout.tsx": $_layout,
     "./routes/_middleware.tsx": $_middleware,
-    "./routes/api/joke.ts": $api_joke,
+    "./routes/api/getcams.ts": $api_getcams,
     "./routes/cameras/[id].tsx": $cameras_id_,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
@@ -31,6 +36,9 @@ const manifest = {
   },
   islands: {
     "./islands/Counter.tsx": $Counter,
+    "./islands/Logout.tsx": $Logout,
+    "./islands/ReloadCams.tsx": $ReloadCams,
+    "./islands/cameraslist.tsx": $cameraslist,
     "./islands/video.tsx": $video,
   },
   baseUrl: import.meta.url,

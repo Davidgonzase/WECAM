@@ -1,8 +1,13 @@
-import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
+import { FreshContext, Handlers, PageProps, RouteConfig } from "$fresh/server.ts";
 import { setCookie } from "$std/http/cookie.ts";
 
 type context = {
   message: string;
+};
+
+
+export const config: RouteConfig = {
+  skipInheritedLayouts: true,
 };
 
 export const handler: Handlers = {
@@ -24,16 +29,15 @@ export const handler: Handlers = {
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ email:email, password:password }),
+      body: JSON.stringify({ email: email, password: password }),
     });
 
     const datalogin = await reslogin.json();
 
-    if(datalogin.status == 200){
-
+    if (datalogin.status == 200) {
       const headers = new Headers();
       const url = new URL(req.url);
-      
+
       setCookie(headers, {
         name: "auth",
         value: datalogin.content.jwttoken,
@@ -45,14 +49,13 @@ export const handler: Handlers = {
 
       headers.set("location", "/webcams");
       return new Response(null, {
-      status: 303,
-      headers,
+        status: 303,
+        headers,
       });
-
-    }else if(datalogin.error || datalogin.status!==200){
-      return ctx.render({message:datalogin.error});
-    }else{
-      return ctx.render({message:"Internal error"});
+    } else if (datalogin.error || datalogin.status !== 200) {
+      return ctx.render({ message: datalogin.error });
+    } else {
+      return ctx.render({ message: "Internal error" });
     }
   },
 };
@@ -60,18 +63,24 @@ export const handler: Handlers = {
 export default function Page(props: PageProps<context>) {
   return (
     <div class="fullpage">
-      <div class="centerform">
-        <img src="" alt="" />
-        <h2>WECAMWEB</h2>
-        <form method="POST" action="/login" class="loginform">
-          <label form="Usuario">Usuario</label>
-          <input type="Mail" id="email" name="email" required=""/>
-          <label form="Password">Password</label>
-          <input type="Password" id="password" name="password" required=""/>
-          {props.data.message}
-          <button type="submit">ENTRAR</button>
-        </form>
-        <a href="/register">Make an account</a>
+      <div class="one-third">
+        <div class="login">
+          <img src=""/>
+          <h2>WECAMWEB</h2>
+          <form method="POST" action="/login" class="loginform">
+            <label form="Usuario">Usuario</label>
+            <input type="Mail" id="email" name="email" required="" />
+            <label form="Password">Password</label>
+            <input type="Password" id="password" name="password" required="" />
+            <p class="error-message">{props.data.message}</p>
+            <button class="button-l-r" type="submit">Enter</button>
+          </form>
+          <p>Dont have an account?</p>
+          <a href="/register">Register</a>
+        </div>
+        <div class="news">
+          News and updates // Work in progress
+        </div>
       </div>
     </div>
   );

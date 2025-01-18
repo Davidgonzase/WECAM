@@ -1,0 +1,138 @@
+.fullpage{
+  height: 100vh;
+  width: 100vw;
+}
+
+.one-third {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 455px;
+  height: 100vh;
+}
+
+.news {
+  display: flex;
+  width: calc(100vw - 455px);
+  height: 100vh;
+  background-color: wheat;
+  min-width: 0px;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: black;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 20px);
+  min-width: 350px;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: #555555;
+}
+
+input {
+  padding: 0.8rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #333333;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: wheat;
+  outline: none;
+}
+
+.error-message {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #dc3545;
+}
+
+.button-l-r { 
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  line-height: 15px;
+  border: solid;
+    border-top-width: medium;
+    border-top-color: currentcolor;
+    border-right-width: medium;
+    border-right-color: currentcolor;
+    border-bottom-width: medium;
+    border-bottom-color: currentcolor;
+    border-left-width: medium;
+    border-left-color: currentcolor;
+  border-width: 1px;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  display: inline-block;
+  gap: 5px;
+  -webkit-transition: border-radius .2s;
+  transition: border-radius .2s;
+  color: black;
+  background-color: wheat;
+}
+
+.button-l-r:hover {
+  border-radius: 999px;
+  box-shadow: black;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+a {
+  color: #551a8b;
+  transition: color 0.4s;
+}
+
+a:hover {
+  color: rgb(255, 217, 146);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.centerform {
+  width: 450px;
+  border-radius: 15px;
+  border: solid;
+    border-top-width: medium;
+    border-top-color: currentcolor;
+    border-right-width: medium;
+    border-right-color: currentcolor;
+    border-bottom-width: medium;
+    border-bottom-color: currentcolor;
+    border-left-width: medium;
+    border-left-color: currentcolor;
+  border-width: 1px;
+  padding: 15px;
+}
+
+.fullpagecenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}

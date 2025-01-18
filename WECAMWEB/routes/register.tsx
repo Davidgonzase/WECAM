@@ -1,9 +1,13 @@
-import { FreshContext, Handlers, PageProps } from "$fresh/server.ts";
+import { FreshContext, Handlers, PageProps, RouteConfig } from "$fresh/server.ts";
 import { setCookie } from "$std/http/cookie.ts";
 
 
 type context = {
   message: string;
+};
+
+export const config: RouteConfig = {
+  skipInheritedLayouts: true,
 };
 
 export const handler: Handlers = {
@@ -76,7 +80,7 @@ export const handler: Handlers = {
 
 export default function Page(props: PageProps<context>) {
   return (
-    <div class="fullpage">
+    <div class="fullpagecenter">
       <div class="centerform">
         <img src="" alt="" />
         <h2>WECAMWEB</h2>
@@ -87,8 +91,8 @@ export default function Page(props: PageProps<context>) {
           <input type="" id="email" name="email" required="" />
           <label form="Password">Password</label>
           <input type="Password" id="password" name="password" required="" />
-          <button type="submit">ENTRAR</button>
-          {props.data.message}
+          <button class="button-l-r" type="submit">ENTRAR</button>
+          <p class="error-message">{props.data.message}</p>
         </form>
       </div>
     </div>
