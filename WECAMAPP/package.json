@@ -1,0 +1,21 @@
+{
+  "name": "wecamapp",
+  "version": "1.0.0",
+  "productName": "WECAMAPP",
+  "description": "Desktop app for WECAM",
+  "main": "main.js",
+  "author": "David González Serrano",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . MiApp --platform=win32 --arch=x64 --out=dist --overwrite"
+  },
+  "devDependencies": {
+    "electron": "^35.2.1",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "electron-store": "^10.0.1"
+  }
+}

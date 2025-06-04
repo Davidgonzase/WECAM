@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>New Stream</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="menudiv">
+    <p>WECAMAPP</p>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="newcam.html">New</a>
+    <a href="../index.html">LogOut</a>
+  </div>
+
+  <div class="centercolumn">
+    <h1 id="title">Stream</h1>
+
+    <input type="text" id="streamName" placeholder="Nombre del stream" />
+
+    <button id="startButton" class="button-l-r" disabled>Transmitir</button>
+
+    <p id="streamError" class="error-message"></p>
+
+    <video
+      id="localVideo"
+      autoplay
+      playsinline
+      style="width: 480px; height: auto; border: 1px solid #ccc;"
+    ></video>
+
+    <p id="status">Esperando cámara...</p>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.8.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <script src="newcam.js"></script>
+</body>
+</html>
