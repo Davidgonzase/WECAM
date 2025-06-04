@@ -6,8 +6,13 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $_middleware from "./routes/_middleware.tsx";
+import * as $api_deletecam from "./routes/api/deletecam.ts";
+import * as $api_deletewarnings from "./routes/api/deletewarnings.ts";
 import * as $api_getcams from "./routes/api/getcams.ts";
+import * as $api_getwarnings from "./routes/api/getwarnings.ts";
+import * as $api_joke from "./routes/api/joke.ts";
 import * as $cameras_id_ from "./routes/cameras/[id].tsx";
+import * as $detections from "./routes/detections.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
@@ -19,6 +24,7 @@ import * as $Logout from "./islands/Logout.tsx";
 import * as $ReloadCams from "./islands/ReloadCams.tsx";
 import * as $cameraslist from "./islands/cameraslist.tsx";
 import * as $video from "./islands/video.tsx";
+import * as $warninglist from "./islands/warninglist.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -27,8 +33,13 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_layout.tsx": $_layout,
     "./routes/_middleware.tsx": $_middleware,
+    "./routes/api/deletecam.ts": $api_deletecam,
+    "./routes/api/deletewarnings.ts": $api_deletewarnings,
     "./routes/api/getcams.ts": $api_getcams,
+    "./routes/api/getwarnings.ts": $api_getwarnings,
+    "./routes/api/joke.ts": $api_joke,
     "./routes/cameras/[id].tsx": $cameras_id_,
+    "./routes/detections.tsx": $detections,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/login.tsx": $login,
@@ -42,6 +53,7 @@ const manifest = {
     "./islands/ReloadCams.tsx": $ReloadCams,
     "./islands/cameraslist.tsx": $cameraslist,
     "./islands/video.tsx": $video,
+    "./islands/warninglist.tsx": $warninglist,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

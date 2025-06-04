@@ -25,7 +25,7 @@ export const Stream: FunctionComponent<Context> = (props) => {
     async function fetchOffer() {
       try {
         console.log("Inicializando")
-        const response = await fetch("https://wecam.onrender.com/camera", {
+        const response = await fetch("http://localhost:8010/camera", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export const Stream: FunctionComponent<Context> = (props) => {
 
           console.log("sdp", peerConnection.localDescription.sdp)
 
-          await fetch("https://wecam.onrender.com/putsdp", {
+          await fetch("http://localhost:8010/putsdp", {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",

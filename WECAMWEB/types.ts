@@ -13,3 +13,14 @@ export type cam = {
     name:string,
     camoffer:string
 }
+
+export type warningtype = {
+    camara:string,
+    camaraid:string,
+    detections:detection[]
+}
+
+export type detection = {
+    _id:string,
+    hour:string
+}

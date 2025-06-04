@@ -10,6 +10,7 @@ const Layout = (props: PageProps) => {
         <div>
           <a href="/webcams">Webcams</a>
           <a>User</a>
+          <a href="/detections">Detections</a>
           <a>About us</a>
         </div>
         <button class="logout-button" onClick="window.location.href='/logout'">Logout</button>

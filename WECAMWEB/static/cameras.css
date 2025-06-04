@@ -57,6 +57,8 @@
     min-height: 50px;
     font-size: 1.2rem;
     border-bottom: solid 1px black;
+    display: flex;
+    justify-content: space-between;
 }
 
 .cameralive{
@@ -75,4 +77,18 @@
 .cameralive video{
     min-height: 500px;
     min-width: 500px;
+}
+
+.detectionlist{
+    overflow:hidden; 
+    overflow-y:scroll;
+}
+
+.detection{
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(168, 255, 255);
+    width: 100%;
+    font-size: 1.2rem;
+    border-bottom: solid 1px black;
 }
