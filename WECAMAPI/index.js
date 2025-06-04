@@ -11,11 +11,16 @@ import login from './resolver/get/login.js';
 import camera from './resolver/get/getcaminfo.js';
 import verify from './resolver/get/verify.js';
 import cams from './resolver/get/getcams.js';
+import getdetections from './resolver/get/getdetections.js';
 import putsdp from './resolver/put/putsdp.js'
 import deleteremote from './resolver/put/deleteremote.js'
+import deletecam from "./resolver/delete/deletecam.js"
 import deleteuser from './resolver/delete/deleteuser.js'
+import deletewarning from "./resolver/delete/deletewarning.js"
 import newuser from './resolver/post/newuser.js'
 import newcam from './resolver/post/newcam.js'
+import warning from './resolver/post/warning.js'
+
 
 await dotenv.config();
 const MDKEY = process.env.mongodb_key;
@@ -24,8 +29,6 @@ export const JWTSECRET = process.env.jwt_secret;
 await mongoose.connect(MDKEY, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Database connected'))
   .catch(err => console.error('Database connection error:', err));
-
-
 
   app.use(cors({
       origin: '*', 
@@ -53,6 +56,15 @@ app.post('/camera', async (req, res) => {
 app.post('/getcams', async (req, res) => {
   await cams(req,res);
 })
+
+app.post('/getdetections', async (req, res) => {
+  await getdetections(req,res);
+})
+
+app.post('/warning', async (req, res) => {
+  await warning(req,res);
+})
+
 
 app.post('/verify', async (req, res) => {
   await verify(req,res);
@@ -88,6 +100,10 @@ app.delete('/deletecam',async (req,res)=>{
 
 app.delete('/deleteuser',async (req,res)=>{
   await deleteuser(req,res);  
+})
+
+app.delete('/deletewarning',async (req,res)=>{
+  await deletewarning(req,res);  
 })
 
 

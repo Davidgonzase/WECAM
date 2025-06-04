@@ -28,6 +28,7 @@ async function newuser(req, res) {
                 password:hashpass,
                 email,
                 cams: [],
+                detections: []
             });
             await newUser.save();
 

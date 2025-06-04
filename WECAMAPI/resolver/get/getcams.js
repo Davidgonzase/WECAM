@@ -23,7 +23,6 @@ async function cams(req,res){
                 if(!currentuser)throw Error("Not found");
                 response.error = "Ok";
                 response.content = currentuser.cams;
-                console.log(response)
                 return res.send(response); 
             } catch (error) {
                 response.status = 404;

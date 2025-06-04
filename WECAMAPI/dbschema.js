@@ -15,10 +15,17 @@ const camSchema = new Schema({
     name: { type: String, required: true },
     camoffer: {type: String},
     vieweranswer : {type: String},
+    detections:[{ type: Schema.Types.ObjectId, ref:'detection'}],
     icesendercandidates:[{ type: Schema.Types.ObjectId, ref:'spd'}],
     iceviewercandidates:[{ type: Schema.Types.ObjectId, ref:'spd'}]
 });
 const camModel = model('camera',camSchema); 
+
+const detectionSchema = new Schema({
+    hour: {type:String, required: true}
+});
+
+const detectionModel = model('detection',detectionSchema); 
 
 const sdpSchema = new Schema({
     sdp: { type: String, required: true },
@@ -28,5 +35,5 @@ const sdpSchema = new Schema({
 
 const sdpModel = model('sdp',sdpSchema);
 
-export {userModel,camModel,sdpModel};
+export {userModel,camModel,sdpModel,detectionModel};
 
